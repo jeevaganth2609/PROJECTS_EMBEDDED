@@ -1,0 +1,113 @@
+#include<pic.h>
+__CONFIG(0X2CE4);
+
+
+
+void delay(unsigned int t) {
+    while(t--); }	
+
+
+void enable()
+{
+    RE1=1;
+    delay(500);
+    RE1=0;
+    delay(500);
+}
+
+void lcd(char rs,char data){
+    RE0=rs;
+    PORTD=data;
+    enable();
+}
+void str( char * string)// passing a array or string
+{
+
+ while(*string){
+
+lcd(1, *string++);
+
+}}
+
+void main(){
+
+PORTA=0X00;
+TRISA=0X0D;
+ANSEL=0X0D;ANSELH=0X00;
+ADCON0=0X81;
+ADCON1=0X90;
+PORTD=TRISD=PORTE=TRISE=0X00;
+
+
+  lcd(0,0X38);
+  lcd(0,0X0C);
+unsigned int a=0,b=0,temp=0,i=0,j=0,k=0,l=0,m=0,n=0 ,c,d,e,f;
+int count=0;
+
+while(1){
+
+GO=1;
+while(GO==1);
+
+
+a=ADRESL;
+b=ADRESH;
+
+if(b==0){ 
+temp =a;
+}
+
+if(b==1){
+temp =a+256;
+}
+if(b==2){
+temp =a+512;
+}
+if(b==3){
+temp =a+768;
+}
+
+
+unsigned int  value;
+
+value = (1.5 /1023)*100*temp;
+//value = ((float)temp * 0.14662755659824); // directly giving value
+
+i=value/100; //1  // sample  value
+j=value%100; //23
+k=j/10; //2
+l=j%10;//3
+
+
+count=((float)value/150)*100; //percentage 
+c=count/10; //10
+d=count%10; //0
+e=c/10;//1
+f=c%10;//0
+
+if(value==150 )
+{
+RA5=1;}
+else{
+
+RA5=0;}
+
+
+lcd(0,0X80); // sample value
+lcd(1,i+48);
+lcd(1,k+48);
+lcd(1,l+48);
+
+
+lcd(0,0XC4);
+lcd(1,37);
+lcd(0,0XC1);//percentage 
+lcd(1,e+48);
+lcd(1,f+48);
+lcd(1,d+48);
+
+
+}
+}
+
+

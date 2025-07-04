@@ -1,0 +1,143 @@
+#include<pic.h>
+__CONFIG(0X2CE4);
+
+unsigned int c=0, i=0,a=0,b=0;
+int arr[10]={ 0X3F,0X06 , 0X5B , 0X4F , 0X66 , 0X6D , 0X7D , 0X07 , 0X7F , 0X6F};
+
+void interrupt isr(){  // INTERTRUPT
+if(T0IF==1)
+{
+TMR0=131;
+c++;
+T0IF=0;
+}
+}
+
+void delay(unsigned int t) { //DELAY
+    while(t--); }	
+
+
+void enable(){ //ENABLE
+    RE1=1;
+    delay(1000);
+    RE1=0;
+    delay(1000);
+}
+
+void lcd(char rs,char data){ // LCD
+    RE0=rs;
+    PORTD=data;
+    enable();
+}
+void str( char * string)// passing a array or string
+{
+
+ while(*string){
+
+lcd(1, *string++);
+
+}
+}
+
+
+void main(){
+OPTION_REG=0X05;
+PORTC=TRISC=0X00;
+PORTD=TRISD=0X00;
+PORTE=TRISE=0X00;
+PORTA=TRISA=0X00;
+PORTB=TRISB=0X00;
+TMR0=0;
+GIE=1;
+T0IE=1;
+T0IF=0;
+char string[50];
+
+ANSEL=ANSELH=0X00;
+
+lcd(0,0X38);
+ lcd(0,0X06);
+  lcd(0,0X0C);
+  unsigned int i=0;
+
+while(1){
+
+if(c>=125)
+{ 
+lcd(0,0X80);
+str("TRAFFIC SIGNAL");
+RA0=1;RA1=RA2=0;
+lcd(0,0XC0);
+str("STOP.");
+for(i=20; i>0 ; i--){ 
+a= i/10; 
+b= i%10;
+
+RA3=0; 
+RA4=1;
+
+PORTC = arr[a];
+delay (15000);
+
+RA3=1; 
+RA4=0;
+
+PORTC = arr[b];
+delay (15000);}
+
+	
+if(c>=250)
+{ 
+lcd(0,0X80);
+str("TRAFFIC SIGNAL");
+RA1=1;RA0=RA2=0;
+lcd(0,0XC0);
+str("READY.");
+for(i=5; i>0 ; i--){ 
+a= i/10; 
+b= i%10;
+
+RA3=0; 
+RA4=1;
+
+PORTC = arr[a];
+delay (15000);
+
+RA3=1; 
+RA4=0;
+
+PORTC = arr[b];
+delay (15000);
+
+PORTC=0;
+}	
+
+if(c>375)
+{ 
+lcd(0,0X01);
+lcd(0,0X80);
+str("TRAFFIC SIGNAL");
+RA2=1;RA1=RA0=0;
+lcd(0,0XC0);
+str("GO");
+for(i=5; i>0 ; i--){ 
+a= i/10; 
+b= i%10;
+
+RA3=0; 
+RA4=1;
+
+PORTC = arr[a];
+delay (15000);
+
+RA3=1; 
+RA4=0;
+
+PORTC = arr[b];
+delay (15000);}
+}
+}	
+
+}
+}
+}

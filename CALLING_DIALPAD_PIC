@@ -1,0 +1,144 @@
+#include<pic.h>
+__CONFIG(0X2CE4);
+
+
+void delay(unsigned int t) {
+    while(t--); }
+
+
+
+void enable()
+{
+    RE1=1;
+    delay(1000);
+    RE1=0;
+    delay(1000);
+}
+
+void lcd(char rs,char data){
+    RE0=rs;
+    PORTD=data;
+    enable();
+}
+void str( char * string)// passing a array or string
+{
+
+ while(*string)
+{
+
+lcd(1, *string++);
+
+}
+}
+
+void main(){
+
+PORTB=0X00;
+TRISB=0X07;
+PORTD=PORTE=0X00;
+TRISD=TRISE=0X00;
+ANSEL=ANSELH=0X00;
+
+unsigned int c=0;
+ lcd(0,0X38);
+  lcd(0,0X80);
+  lcd(0,0X0E);
+
+while(1)
+{
+RB3=1;RB4=RB5=RB6=0;  //FIRST ROW 
+if(RB0==1){ // 1
+
+lcd(1,49);
+c++;
+while(RB0==1);
+}
+if(RB1==1){ //2
+
+lcd(1,50);
+c++;
+while(RB1==1);
+
+}if(RB2==1){ //3
+
+lcd(1,51);
+c++;
+while(RB2==1);
+}
+
+RB4=1;RB3=RB5=RB6=0;  //SECOND ROW 
+if(RB0==1){ // 4
+
+lcd(1,52);
+c++;
+while(RB0==1);
+}
+if(RB1==1){ //5
+
+lcd(1,53);
+c++;
+while(RB1==1);
+
+}if(RB2==1){ //6
+
+lcd(1,54);
+c++;
+while(RB2==1);
+}
+
+RB5=1;RB4=RB3=RB6=0;  //THIRD ROW 
+if(RB0==1){ // 7
+
+lcd(1,55);
+c++;
+while(RB0==1);
+}
+if(RB1==1){ //8
+
+lcd(1,56);
+c++;
+while(RB1==1);
+
+}if(RB2==1){ //9
+
+lcd(1,57);
+c++;
+while(RB2==1);
+}
+
+RB6=1;RB4=RB5=RB3=0;  //FOURTH ROW 
+
+
+ 
+if(RB0==1)
+{
+if(c==10)
+{
+lcd(0,0XC0);
+char string[]="calling...";
+str(string);
+}
+else
+{
+lcd(0,0XC0);
+char string[]="invalid num...";
+str(string);
+}
+}
+if(RB1==1){ //0
+
+lcd(1,48);
+while(RB1==1);
+
+}
+
+if(RB2==1){ 
+lcd(0,0X01);
+
+
+
+}
+
+}
+
+}	
